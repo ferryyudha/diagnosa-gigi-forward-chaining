@@ -1,0 +1,24 @@
+# =====================================================
+# .gitignore - SiPaGi
+# =====================================================
+
+# Jangan pernah commit file .env ke repository!
+# File ini berisi password dan konfigurasi sensitif.
+.env
+
+# File cache & temporary
+*.log
+*.tmp
+*.cache
+/cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
