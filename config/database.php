@@ -36,6 +36,18 @@ define('APP_NAME',    env('APP_NAME', 'SiPaGi'));
 define('BASE_URL',    env('APP_URL',  'http://localhost/forward_chaining'));
 define('APP_ENV',     env('APP_ENV',  'development'));
 
+// -------------------------------------------------------
+// Pengaturan Error Reporting berdasarkan APP_ENV
+// -------------------------------------------------------
+if (APP_ENV === 'development') {
+    ini_set('display_errors', '1');
+    ini_set('display_startup_errors', '1');
+    error_reporting(E_ALL);
+} else {
+    ini_set('display_errors', '0');
+    error_reporting(0);
+}
+
 // Info Klinik
 define('KLINIK_NAMA',   env('KLINIK_NAMA',   'Praktik Mandiri Drg. Hj. Rini Sutarti'));
 define('KLINIK_ALAMAT', env('KLINIK_ALAMAT', '-'));
@@ -48,14 +60,20 @@ define('KLINIK_TELP',   env('KLINIK_TELP',   '-'));
  * @return mysqli Objek koneksi yang sudah siap digunakan
  */
 function getConnection(): mysqli {
-    $conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+    try {
+        // Gunakan @ untuk menekan warning php bawaan, tangani lewat Exception (PHP 8.1+)
+        $conn = @new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
 
-    if ($conn->connect_error) {
+        if ($conn->connect_error) {
+            throw new Exception($conn->connect_error);
+        }
+    } catch (Throwable $e) {
         $isDev = APP_ENV === 'development';
+        $errMessage = $e->getMessage();
 
         // Pesan error detail hanya ditampilkan di mode development
         $detail = $isDev
-            ? '<p><strong>Detail Error:</strong> ' . htmlspecialchars($conn->connect_error) . '</p>
+            ? '<p><strong>Detail Error:</strong> ' . htmlspecialchars($errMessage) . '</p>
                <p><strong>Konfigurasi saat ini:</strong></p>
                <ul style="margin:8px 0 0 20px;line-height:1.8">
                    <li>Host: <code>' . DB_HOST . ':' . DB_PORT . '</code></li>
