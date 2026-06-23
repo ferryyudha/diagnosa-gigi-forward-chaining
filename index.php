@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-bs-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="SiPaGi - Sistem Pakar Diagnosis Penyakit Gigi menggunakan Forward Chaining. Praktik Mandiri Drg. Hj. Rini Sutarti">
   <title>SiPaGi — Sistem Pakar Penyakit Gigi</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
   <style>
     /* ─── How it works ─── */
@@ -87,18 +88,23 @@
 <!-- ══════════════════════════════════════
      NAVBAR
 ══════════════════════════════════════ -->
-<nav class="navbar-home" id="navbar">
+<nav class="navbar navbar-expand-lg navbar-dark navbar-home" id="navbar">
   <a href="index.php" class="navbar-brand" style="color:inherit;text-decoration:none">
     <div class="navbar-brand-icon">🦷</div>
     <span class="navbar-brand-text">SiPaGi</span>
   </a>
-  <div class="navbar-links">
-    <a href="#fitur" class="navbar-link">Fitur</a>
-    <a href="#cara-kerja" class="navbar-link">Cara Kerja</a>
-  </div>
-  <div style="display:flex;gap:8px;align-items:center">
-    <a href="pages/konsultasi.php" class="btn btn-outline btn-sm">Konsultasi</a>
-    <a href="auth/login.php" class="btn btn-primary btn-sm">Login Admin</a>
+  <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarContent">
+    <div class="navbar-nav mx-auto gap-lg-3 my-2 my-lg-0">
+      <a href="#fitur" class="nav-link text-white-50 text-white-hover">Fitur</a>
+      <a href="#cara-kerja" class="nav-link text-white-50 text-white-hover">Cara Kerja</a>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="pages/konsultasi.php" class="btn btn-outline btn-sm">Konsultasi</a>
+      <a href="auth/login.php" class="btn btn-primary btn-sm">Login Admin</a>
+    </div>
   </div>
 </nav>
 
@@ -162,36 +168,50 @@
     <p class="section-desc">Dirancang khusus untuk membantu pasien dan dokter dalam proses diagnosa awal penyakit gigi</p>
   </div>
 
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon">🤖</div>
-      <div class="feature-title">Engine Forward Chaining</div>
-      <p class="feature-desc">Algoritma forward chaining menelusuri fakta (gejala) menuju kesimpulan (penyakit) secara sistematis.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">📊</div>
-      <div class="feature-title">Persentase Kecocokan</div>
-      <p class="feature-desc">Menghitung dan menampilkan tingkat kesesuaian antara gejala yang dirasakan dengan basis pengetahuan.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">📋</div>
-      <div class="feature-title">Riwayat Konsultasi</div>
-      <p class="feature-desc">Menyimpan seluruh histori konsultasi pasien untuk referensi dokter dan evaluasi kondisi pasien.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">⚙️</div>
-      <div class="feature-title">Panel Admin Lengkap</div>
-      <p class="feature-desc">Manajemen basis pengetahuan (penyakit, gejala, aturan) secara mudah melalui panel yang intuitif.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">💊</div>
-      <div class="feature-title">Rekomendasi Penanganan</div>
-      <p class="feature-desc">Memberikan informasi penyakit dan rekomendasi penanganan medis yang sesuai dengan hasil diagnosa.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🖨️</div>
-      <div class="feature-title">Cetak Hasil Diagnosa</div>
-      <p class="feature-desc">Hasil diagnosa dapat dicetak sebagai laporan yang dapat dibawa saat konsultasi langsung.</p>
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon">🤖</div>
+          <div class="feature-title">Engine Forward Chaining</div>
+          <p class="feature-desc">Algoritma forward chaining menelusuri fakta (gejala) menuju kesimpulan (penyakit) secara sistematis.</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon">📊</div>
+          <div class="feature-title">Persentase Kecocokan</div>
+          <p class="feature-desc">Menghitung dan menampilkan tingkat kesesuaian antara gejala yang dirasakan dengan basis pengetahuan.</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon">📋</div>
+          <div class="feature-title">Riwayat Konsultasi</div>
+          <p class="feature-desc">Menyimpan seluruh histori konsultasi pasien untuk referensi dokter dan evaluasi kondisi pasien.</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon">⚙️</div>
+          <div class="feature-title">Panel Admin Lengkap</div>
+          <p class="feature-desc">Manajemen basis pengetahuan (penyakit, gejala, aturan) secara mudah melalui panel yang intuitif.</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon">💊</div>
+          <div class="feature-title">Rekomendasi Penanganan</div>
+          <p class="feature-desc">Memberikan informasi penyakit dan rekomendasi penanganan medis yang sesuai dengan hasil diagnosa.</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-6 col-lg-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon">🖨️</div>
+          <div class="feature-title">Cetak Hasil Diagnosa</div>
+          <p class="feature-desc">Hasil diagnosa dapat dicetak sebagai laporan yang dapat dibawa saat konsultasi langsung.</p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -207,26 +227,34 @@
       <p class="section-desc">Sistem menelusuri dari fakta (gejala) menuju kesimpulan (diagnosa penyakit) secara otomatis</p>
     </div>
 
-    <div class="how-grid">
-      <div class="how-step">
-        <div class="how-num">1</div>
-        <div class="how-title">Input Gejala</div>
-        <p class="how-desc">Pasien memilih gejala yang dirasakan dari daftar gejala yang tersedia di sistem</p>
+    <div class="row g-4 justify-content-center mt-4">
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="how-step">
+          <div class="how-num">1</div>
+          <div class="how-title">Input Gejala</div>
+          <p class="how-desc">Pasien memilih gejala yang dirasakan dari daftar gejala yang tersedia di sistem</p>
+        </div>
       </div>
-      <div class="how-step">
-        <div class="how-num">2</div>
-        <div class="how-title">Mesin Inferensi</div>
-        <p class="how-desc">Sistem mencocokkan gejala (fakta) dengan aturan IF-THEN dalam basis pengetahuan</p>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="how-step">
+          <div class="how-num">2</div>
+          <div class="how-title">Mesin Inferensi</div>
+          <p class="how-desc">Sistem mencocokkan gejala (fakta) dengan aturan IF-THEN dalam basis pengetahuan</p>
+        </div>
       </div>
-      <div class="how-step">
-        <div class="how-num">3</div>
-        <div class="how-title">Hitung Kecocokan</div>
-        <p class="how-desc">Dihitung persentase kesesuaian gejala terhadap setiap kemungkinan penyakit</p>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="how-step">
+          <div class="how-num">3</div>
+          <div class="how-title">Hitung Kecocokan</div>
+          <p class="how-desc">Dihitung persentase kesesuaian gejala terhadap setiap kemungkinan penyakit</p>
+        </div>
       </div>
-      <div class="how-step">
-        <div class="how-num">4</div>
-        <div class="how-title">Hasil Diagnosa</div>
-        <p class="how-desc">Sistem menampilkan diagnosa beserta deskripsi penyakit dan rekomendasi penanganan</p>
+      <div class="col-12 col-sm-6 col-lg-3">
+        <div class="how-step">
+          <div class="how-num">4</div>
+          <div class="how-title">Hasil Diagnosa</div>
+          <p class="how-desc">Sistem menampilkan diagnosa beserta deskripsi penyakit dan rekomendasi penanganan</p>
+        </div>
       </div>
     </div>
   </div>
@@ -303,5 +331,6 @@ document.querySelectorAll('.feature-card, .how-step, .hero-stat').forEach(el => 
   observer.observe(el);
 });
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
