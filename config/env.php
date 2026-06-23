@@ -15,8 +15,12 @@
  */
 
 function loadEnv(string $path): void {
-    // Pastikan file .env ada
+    // Jika file .env tidak ada, periksa apakah variabel lingkungan krusial sudah didefinisikan (misalnya di Railway/hosting)
     if (!file_exists($path)) {
+        if (getenv('DB_HOST') !== false || isset($_ENV['DB_HOST']) || isset($_SERVER['DB_HOST'])) {
+            return;
+        }
+
         die('<div style="font-family:Arial;padding:24px;color:#ef4444;background:#1a0a0a;border:1px solid #ef4444;border-radius:8px;margin:20px">
             <h3>❌ File .env tidak ditemukan!</h3>
             <p>Buat file <code>.env</code> di root project (<code>' . dirname($path) . '</code>).</p>
