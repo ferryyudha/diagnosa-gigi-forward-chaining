@@ -12,62 +12,60 @@
 </head>
 <body>
 <?php
-/**
- * DASHBOARD ADMIN
- * Halaman utama panel admin yang menampilkan statistik sistem:
- * - Total data penyakit, gejala, aturan, konsultasi
- * - Grafik diagnosa terbanyak
- * - Riwayat konsultasi terbaru
- */
+// Dashboard admin — statistik sistem dan riwayat konsultasi terbaru
 require_once '../config/database.php'; // Load .env & koneksi DB terlebih dahulu
 require_once '../config/session.php';  // Session butuh BASE_URL dari database.php
 requireAdmin(); // Hanya admin yang bisa akses
 
-// =====================================================
-// AMBIL STATISTIK DARI DATABASE
-// =====================================================
+// Ambil statistik untuk stat cards
+$stmt = $conn->prepare("SELECT COUNT(*) as total FROM penyakit");
+$stmt->execute();
+$totalPenyakit = $stmt->get_result()->fetch_assoc()['total'];
 
-// Hitung total penyakit
-$totalPenyakit = $conn->query("SELECT COUNT(*) as total FROM penyakit")->fetch_assoc()['total'];
+$stmt = $conn->prepare("SELECT COUNT(*) as total FROM gejala");
+$stmt->execute();
+$totalGejala = $stmt->get_result()->fetch_assoc()['total'];
 
-// Hitung total gejala
-$totalGejala = $conn->query("SELECT COUNT(*) as total FROM gejala")->fetch_assoc()['total'];
+$stmt = $conn->prepare("SELECT COUNT(*) as total FROM aturan");
+$stmt->execute();
+$totalAturan = $stmt->get_result()->fetch_assoc()['total'];
 
-// Hitung total aturan (relasi penyakit-gejala)
-$totalAturan = $conn->query("SELECT COUNT(*) as total FROM aturan")->fetch_assoc()['total'];
+$stmt = $conn->prepare("SELECT COUNT(*) as total FROM konsultasi");
+$stmt->execute();
+$totalKonsultasi = $stmt->get_result()->fetch_assoc()['total'];
 
-// Hitung total konsultasi yang sudah dilakukan
-$totalKonsultasi = $conn->query("SELECT COUNT(*) as total FROM konsultasi")->fetch_assoc()['total'];
+$stmt = $conn->prepare("SELECT COUNT(*) as total FROM konsultasi WHERE MONTH(tanggal) = MONTH(NOW()) AND YEAR(tanggal) = YEAR(NOW())");
+$stmt->execute();
+$konsultasiBulanIni = $stmt->get_result()->fetch_assoc()['total'];
 
-// Konsultasi bulan ini
-$konsultasiBulanIni = $conn->query("SELECT COUNT(*) as total FROM konsultasi WHERE MONTH(tanggal) = MONTH(NOW()) AND YEAR(tanggal) = YEAR(NOW())")->fetch_assoc()['total'];
-
-// =====================================================
-// DATA UNTUK GRAFIK - Penyakit yang paling sering terdiagnosa
-// =====================================================
-$queryGrafik = "SELECT p.nama, COUNT(k.id) as jumlah 
-                FROM konsultasi k 
-                JOIN penyakit p ON k.hasil_diagnosa = p.nama 
-                GROUP BY p.nama 
-                ORDER BY jumlah DESC 
-                LIMIT 8";
-$resultGrafik = $conn->query($queryGrafik);
+// Data grafik diagnosa terbanyak
+$stmt = $conn->prepare("
+    SELECT p.nama, COUNT(k.id) as jumlah
+    FROM konsultasi k
+    JOIN penyakit p ON k.hasil_diagnosa = p.nama
+    GROUP BY p.nama
+    ORDER BY jumlah DESC
+    LIMIT 8
+");
+$stmt->execute();
+$resultGrafik = $stmt->get_result();
 $labelGrafik = [];
-$dataGrafik = [];
+$dataGrafik  = [];
 while ($row = $resultGrafik->fetch_assoc()) {
     $labelGrafik[] = $row['nama'];
-    $dataGrafik[] = $row['jumlah'];
+    $dataGrafik[]  = $row['jumlah'];
 }
 
-// =====================================================
-// KONSULTASI TERBARU (10 data terakhir)
-// =====================================================
-$queryRiwayat = "SELECT k.*, u.nama as nama_user 
-                 FROM konsultasi k 
-                 LEFT JOIN users u ON k.user_id = u.id 
-                 ORDER BY k.tanggal DESC 
-                 LIMIT 10";
-$riwayatTerbaru = $conn->query($queryRiwayat);
+// Riwayat konsultasi terbaru
+$stmt = $conn->prepare("
+    SELECT k.*, u.nama as nama_user
+    FROM konsultasi k
+    LEFT JOIN users u ON k.user_id = u.id
+    ORDER BY k.tanggal DESC
+    LIMIT 10
+");
+$stmt->execute();
+$riwayatTerbaru = $stmt->get_result();
 
 $flash = getFlash();
 ?>

@@ -69,7 +69,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     redirect(BASE_URL . '/admin/pengguna.php');
 }
 
-$userList = $conn->query("SELECT * FROM users ORDER BY role, nama");
+$stmt = $conn->prepare("SELECT * FROM users ORDER BY role, nama");
+$stmt->execute();
+$userList = $stmt->get_result();
 ?>
 
 <div class="app-wrapper">

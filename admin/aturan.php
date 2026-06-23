@@ -70,21 +70,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Ambil daftar penyakit untuk dropdown
-$penyakitList = $conn->query("SELECT * FROM penyakit ORDER BY kode");
+$stmt = $conn->prepare("SELECT * FROM penyakit ORDER BY kode");
+$stmt->execute();
+$penyakitList = $stmt->get_result();
 
 // Ambil daftar gejala untuk checkbox
-$gejalaList = $conn->query("SELECT * FROM gejala ORDER BY kode");
+$stmt = $conn->prepare("SELECT * FROM gejala ORDER BY kode");
+$stmt->execute();
+$gejalaList = $stmt->get_result();
 
 // Ambil semua aturan, dikelompokkan per penyakit
-$aturanQuery = "
+$stmt = $conn->prepare("
     SELECT a.id as aturan_id, p.id as p_id, p.kode as p_kode, p.nama as p_nama,
            g.id as g_id, g.kode as g_kode, g.nama as g_nama
     FROM aturan a
     JOIN penyakit p ON a.penyakit_id = p.id
     JOIN gejala g ON a.gejala_id = g.id
     ORDER BY p.kode, g.kode
-";
-$aturanResult = $conn->query($aturanQuery);
+");
+$stmt->execute();
+$aturanResult = $stmt->get_result();
 
 // Kelompokkan aturan per penyakit
 $aturanGrouped = [];

@@ -53,13 +53,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Ambil semua gejala beserta jumlah penyakit yang menggunakannya
-$gejalaList = $conn->query("
+$stmt = $conn->prepare("
     SELECT g.*, COUNT(a.id) as dipakai_oleh
-    FROM gejala g 
-    LEFT JOIN aturan a ON g.id = a.gejala_id 
-    GROUP BY g.id 
+    FROM gejala g
+    LEFT JOIN aturan a ON g.id = a.gejala_id
+    GROUP BY g.id
     ORDER BY g.kode
 ");
+$stmt->execute();
+$gejalaList = $stmt->get_result();
 ?>
 
 <div class="app-wrapper">

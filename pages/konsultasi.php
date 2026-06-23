@@ -49,16 +49,7 @@
 </head>
 <body>
 <?php
-/**
- * HALAMAN KONSULTASI PASIEN
- * ============================================================
- * Menampilkan form konsultasi untuk memilih gejala.
- * 
- * Logika tampilan:
- * - Jika user LOGIN sebagai admin → pakai layout admin (dengan sidebar)
- * - Jika user BELUM login → pakai layout publik (dengan navbar biasa)
- * ============================================================
- */
+// Halaman konsultasi pasien — tampil dengan sidebar jika admin, tanpa sidebar jika publik
 require_once '../config/database.php';
 require_once '../config/session.php';
 
@@ -66,17 +57,17 @@ require_once '../config/session.php';
 $isAdmin = isset($_SESSION['user_id']) && $_SESSION['role'] === 'admin';
 
 // Ambil semua gejala dari database
-$gejalaQuery = $conn->query("SELECT * FROM gejala ORDER BY kode");
-$gejalaList  = [];
-while ($g = $gejalaQuery->fetch_assoc()) {
+$stmt = $conn->prepare("SELECT * FROM gejala ORDER BY kode");
+$stmt->execute();
+$gejalaResult = $stmt->get_result();
+$gejalaList   = [];
+while ($g = $gejalaResult->fetch_assoc()) {
     $gejalaList[] = $g;
 }
 ?>
 
 <?php if ($isAdmin): ?>
-<!-- =====================================================
-     LAYOUT ADMIN — dengan Sidebar
-     ===================================================== -->
+<!-- Layout admin dengan sidebar -->
 <div class="app-wrapper">
     <?php include '../includes/sidebar.php'; ?>
 
@@ -103,9 +94,7 @@ while ($g = $gejalaQuery->fetch_assoc()) {
             </div>
 
 <?php else: ?>
-<!-- =====================================================
-     LAYOUT PUBLIK — tanpa Sidebar
-     ===================================================== -->
+<!-- Layout publik tanpa sidebar -->
 <nav class="konsultasi-nav">
     <div style="display:flex;align-items:center;gap:12px">
         <a href="../index.php" style="display:flex;align-items:center;gap:8px;color:inherit">
@@ -150,9 +139,6 @@ while ($g = $gejalaQuery->fetch_assoc()) {
         </p>
     </div>
 
-    <!-- =====================================================
-         FORM KONSULTASI
-         ===================================================== -->
     <form method="POST" action="hasil.php" id="formKonsultasi">
 
         <!-- STEP 1: Data Pasien -->
