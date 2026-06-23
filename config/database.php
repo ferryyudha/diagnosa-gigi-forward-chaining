@@ -33,7 +33,20 @@ define('DB_PASS', env('DB_PASS', ''));              // Password MySQL
 // Konstanta Aplikasi dari .env
 // -------------------------------------------------------
 define('APP_NAME',    env('APP_NAME', 'SiPaGi'));
-define('BASE_URL',    env('APP_URL',  'http://localhost/forward_chaining'));
+
+// Deteksi BASE_URL secara dinamis jika tidak disetel di env
+$defaultAppUrl = 'http://localhost/forward_chaining';
+if (isset($_SERVER['HTTP_HOST'])) {
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443)
+        || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+    $protocol = $isHttps ? "https://" : "http://";
+    
+    $isLocalhost = str_contains($_SERVER['HTTP_HOST'], 'localhost') || str_contains($_SERVER['HTTP_HOST'], '127.0.0.1');
+    $subDir = $isLocalhost ? '/forward_chaining' : '';
+    $defaultAppUrl = $protocol . $_SERVER['HTTP_HOST'] . $subDir;
+}
+define('BASE_URL',    env('APP_URL',  $defaultAppUrl));
 define('APP_ENV',     env('APP_ENV',  'development'));
 
 // -------------------------------------------------------
