@@ -6,7 +6,7 @@
   <meta name="description" content="SiPaGi - Sistem Pakar Diagnosis Penyakit Gigi menggunakan Forward Chaining. Praktik Mandiri Drg. Hj. Rini Sutarti">
   <title>SiPaGi — Sistem Pakar Penyakit Gigi</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=2.1">
   <style>
     /* ─── How it works ─── */
     .how-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:0; position:relative; margin-top:48px; }
