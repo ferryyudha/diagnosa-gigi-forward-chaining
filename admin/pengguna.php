@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Pengguna - SiPaGi Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js" defer></script>
 </head>
@@ -81,10 +82,12 @@ $userList = $conn->query("SELECT * FROM users ORDER BY role, nama");
     <div class="main-content">
         <div class="topbar">
             <div style="display:flex;align-items:center;gap:12px">
-                <button id="sidebarToggle" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:20px">☰</button>
+                <button class="btn border-0 p-0 text-white-50 d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
+                    <span class="fs-4">☰</span>
+                </button>
                 <div class="topbar-title">👤 Kelola Pengguna</div>
             </div>
-            <button onclick="openModal('modalTambah')" class="btn btn-primary btn-sm">
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambah">
                 + Tambah Pengguna
             </button>
         </div>
@@ -102,57 +105,57 @@ $userList = $conn->query("SELECT * FROM users ORDER BY role, nama");
             </div>
             <?php endif; ?>
 
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">👥 Daftar Pengguna</div>
-                    <div class="search-box" style="max-width:250px">
+            <div class="card border-translucent">
+                <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2 py-3">
+                    <h5 class="card-title mb-0">👥 Daftar Pengguna</h5>
+                    <div class="search-box ms-auto" style="max-width:250px">
                         <span class="search-icon">🔍</span>
-                        <input type="text" id="tableSearch" placeholder="Cari pengguna...">
+                        <input type="text" id="tableSearch" class="form-control form-control-sm" placeholder="Cari pengguna...">
                     </div>
                 </div>
-                <div class="table-wrapper">
-                    <table>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Nama</th>
-                                <th>Username</th>
-                                <th>Role</th>
-                                <th>Terdaftar</th>
-                                <th style="text-align:center">Aksi</th>
+                                <th style="background: var(--bg-surface); color: var(--text-200); border-bottom: 1px solid var(--border);">#</th>
+                                <th style="background: var(--bg-surface); color: var(--text-200); border-bottom: 1px solid var(--border);">Nama</th>
+                                <th style="background: var(--bg-surface); color: var(--text-200); border-bottom: 1px solid var(--border);">Username</th>
+                                <th style="background: var(--bg-surface); color: var(--text-200); border-bottom: 1px solid var(--border);">Role</th>
+                                <th style="background: var(--bg-surface); color: var(--text-200); border-bottom: 1px solid var(--border);">Terdaftar</th>
+                                <th style="background: var(--bg-surface); color: var(--text-200); border-bottom: 1px solid var(--border); text-align:center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody style="border-top: none;">
                             <?php $no = 1; while ($u = $userList->fetch_assoc()): ?>
-                            <tr>
-                                <td><?= $no++ ?></td>
-                                <td>
-                                    <div style="display:flex;align-items:center;gap:10px">
-                                        <div style="width:32px;height:32px;background:linear-gradient(135deg,#0ea5e9,#06b6d4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="background: transparent;"><?= $no++ ?></td>
+                                <td style="background: transparent;">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div style="width:32px;height:32px;background:linear-gradient(135deg,#0ea5e9,#06b6d4);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color: #fff;">
                                             <?= strtoupper(substr($u['nama'], 0, 1)) ?>
                                         </div>
-                                        <div style="font-weight:500"><?= clean($u['nama']) ?></div>
+                                        <div class="fw-semibold text-white"><?= clean($u['nama']) ?></div>
                                     </div>
                                 </td>
-                                <td style="color:#94a3b8">@<?= clean($u['username']) ?></td>
-                                <td>
-                                    <span class="badge badge-<?= $u['role'] === 'admin' ? 'danger' : 'info' ?>">
+                                <td style="background: transparent;" class="text-muted">@<?= clean($u['username']) ?></td>
+                                <td style="background: transparent;">
+                                    <span class="badge bg-<?= $u['role'] === 'admin' ? 'danger' : 'info' ?> text-white">
                                         <?= $u['role'] === 'admin' ? '👑 Admin' : '👤 User' ?>
                                     </span>
                                 </td>
-                                <td style="color:#64748b;font-size:12px"><?= date('d M Y', strtotime($u['created_at'])) ?></td>
-                                <td style="text-align:center">
-                                    <div style="display:flex;gap:6px;justify-content:center">
+                                <td style="background: transparent;" class="text-muted" style="font-size:12px"><?= date('d M Y', strtotime($u['created_at'])) ?></td>
+                                <td style="background: transparent; text-align:center">
+                                    <div class="d-flex gap-2 justify-content-center">
                                         <button onclick="openEditModal(<?= htmlspecialchars(json_encode($u)) ?>)" 
-                                                class="btn btn-outline btn-sm">✏️ Edit</button>
+                                                class="btn btn-outline-info btn-sm">✏️ Edit</button>
                                         <?php if ($u['id'] != $_SESSION['user_id']): ?>
-                                        <form method="POST" onsubmit="return confirmDelete(this)">
+                                        <form method="POST" onsubmit="return confirmDelete(this)" class="m-0">
                                             <input type="hidden" name="aksi" value="hapus">
                                             <input type="hidden" name="id" value="<?= $u['id'] ?>">
-                                            <button type="submit" class="btn btn-danger btn-sm">🗑</button>
+                                            <button type="submit" class="btn btn-danger btn-sm">🗑 Hapus</button>
                                         </form>
                                         <?php else: ?>
-                                        <span class="badge badge-warning" style="font-size:10px">Anda</span>
+                                        <span class="badge bg-warning text-white" style="font-size:10px">Anda</span>
                                         <?php endif; ?>
                                     </div>
                                 </td>
@@ -167,91 +170,101 @@ $userList = $conn->query("SELECT * FROM users ORDER BY role, nama");
 </div>
 
 <!-- Modal Tambah -->
-<div class="modal-overlay" id="modalTambah">
-    <div class="modal">
-        <div class="modal-header">
-            <div class="modal-title">➕ Tambah Pengguna</div>
-            <button class="modal-close" onclick="closeModal('modalTambah')">×</button>
+<div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: var(--bg-surface); border: 1px solid var(--border-md);">
+            <div class="modal-header border-bottom border-translucent">
+                <h5 class="modal-title fs-6 fw-bold" id="modalTambahLabel">➕ Tambah Pengguna</h5>
+                <button type="button" class="btn-close text-reset bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST">
+                <input type="hidden" name="aksi" value="tambah">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label text-white-50">Nama Lengkap *</label>
+                            <input type="text" name="nama" class="form-control bg-dark border-secondary text-white" placeholder="Nama lengkap..." required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-white-50">Username *</label>
+                            <input type="text" name="username" class="form-control bg-dark border-secondary text-white" placeholder="username (tanpa spasi)" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-white-50">Password *</label>
+                            <input type="password" name="password" class="form-control bg-dark border-secondary text-white" placeholder="Min. 6 karakter" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-white-50">Role</label>
+                            <select name="role" class="form-select bg-dark border-secondary text-white">
+                                <option value="user">👤 User (Pasien)</option>
+                                <option value="admin">👑 Admin</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top border-translucent">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">💾 Simpan</button>
+                </div>
+            </form>
         </div>
-        <form method="POST">
-            <input type="hidden" name="aksi" value="tambah">
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Nama Lengkap *</label>
-                    <input type="text" name="nama" class="form-control" placeholder="Nama lengkap..." required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Username *</label>
-                    <input type="text" name="username" class="form-control" placeholder="username (tanpa spasi)" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Password *</label>
-                    <input type="password" name="password" class="form-control" placeholder="Min. 6 karakter" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Role</label>
-                    <select name="role" class="form-control">
-                        <option value="user">👤 User (Pasien)</option>
-                        <option value="admin">👑 Admin</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline" onclick="closeModal('modalTambah')">Batal</button>
-                <button type="submit" class="btn btn-primary">💾 Simpan</button>
-            </div>
-        </form>
     </div>
 </div>
 
 <!-- Modal Edit -->
-<div class="modal-overlay" id="modalEdit">
-    <div class="modal">
-        <div class="modal-header">
-            <div class="modal-title">✏️ Edit Pengguna</div>
-            <button class="modal-close" onclick="closeModal('modalEdit')">×</button>
+<div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="modalEditLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: var(--bg-surface); border: 1px solid var(--border-md);">
+            <div class="modal-header border-bottom border-translucent">
+                <h5 class="modal-title fs-6 fw-bold" id="modalEditLabel">✏️ Edit Pengguna</h5>
+                <button type="button" class="btn-close text-reset bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST">
+                <input type="hidden" name="aksi" value="edit">
+                <input type="hidden" name="id" id="editId">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label text-white-50">Nama Lengkap *</label>
+                            <input type="text" name="nama" id="editNama" class="form-control bg-dark border-secondary text-white" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-white-50">Username *</label>
+                            <input type="text" name="username" id="editUsername" class="form-control bg-dark border-secondary text-white" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-white-50">Password Baru <small class="text-muted">(kosongkan jika tidak diubah)</small></label>
+                            <input type="password" name="password" class="form-control bg-dark border-secondary text-white" placeholder="Isi untuk ubah password...">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-white-50">Role</label>
+                            <select name="role" id="editRole" class="form-select bg-dark border-secondary text-white">
+                                <option value="user">👤 User</option>
+                                <option value="admin">👑 Admin</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top border-translucent">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">💾 Update</button>
+                </div>
+            </form>
         </div>
-        <form method="POST">
-            <input type="hidden" name="aksi" value="edit">
-            <input type="hidden" name="id" id="editId">
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Nama Lengkap *</label>
-                    <input type="text" name="nama" id="editNama" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Username *</label>
-                    <input type="text" name="username" id="editUsername" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Password Baru <small style="color:#64748b">(kosongkan jika tidak diubah)</small></label>
-                    <input type="password" name="password" class="form-control" placeholder="Isi untuk ubah password...">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Role</label>
-                    <select name="role" id="editRole" class="form-control">
-                        <option value="user">👤 User</option>
-                        <option value="admin">👑 Admin</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline" onclick="closeModal('modalEdit')">Batal</button>
-                <button type="submit" class="btn btn-primary">💾 Update</button>
-            </div>
-        </form>
     </div>
 </div>
 
 <script src="../assets/js/main.js"></script>
 <script>
+const editModal = new bootstrap.Modal(document.getElementById('modalEdit'));
 function openEditModal(data) {
     document.getElementById('editId').value = data.id;
     document.getElementById('editNama').value = data.nama;
     document.getElementById('editUsername').value = data.username;
     document.getElementById('editRole').value = data.role;
-    openModal('modalEdit');
+    editModal.show();
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

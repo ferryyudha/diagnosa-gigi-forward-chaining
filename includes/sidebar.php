@@ -36,95 +36,80 @@ $menuSystem = [
 ];
 ?>
 
-<aside class="sidebar" id="sidebar">
-
-    <!-- Brand -->
-    <div class="sidebar-brand">
-        <a href="<?= BASE_URL ?>/admin/index.php" style="text-decoration:none" class="brand-logo">
-            <div class="brand-icon">🦷</div>
-            <div>
-                <div class="brand-name">SiPaGi</div>
-            </div>
-        </a>
-        <div class="brand-subtitle">Sistem Pakar Penyakit Gigi<br>Metode Forward Chaining</div>
+<aside class="sidebar offcanvas-lg offcanvas-start border-end border-translucent" tabindex="-1" id="sidebar" style="background: var(--bg-surface);">
+    <!-- Mobile Header -->
+    <div class="offcanvas-header d-lg-none px-4 pt-4 pb-2 justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-2">
+            <div class="brand-icon" style="font-size: 20px;">🦷</div>
+            <span class="fw-bold text-white fs-5">SiPaGi</span>
+        </div>
+        <button type="button" class="btn-close text-reset bg-light" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" aria-label="Close"></button>
     </div>
 
-    <!-- Navigation -->
-    <nav class="sidebar-nav">
-
-        <div class="nav-section-title">Menu Utama</div>
-        <?php foreach ($menuUtama as $m): ?>
-        <div class="nav-item">
-            <a href="<?= $m['href'] ?>" class="nav-link <?= $m['active'] ? 'active' : '' ?>">
-                <span class="nav-icon"><?= $m['icon'] ?></span>
-                <?= $m['label'] ?>
-            </a>
-        </div>
-        <?php endforeach; ?>
-
-        <div class="nav-section-title">Basis Pengetahuan</div>
-        <?php foreach ($menuKnowledge as $m): ?>
-        <div class="nav-item">
-            <a href="<?= $m['href'] ?>" class="nav-link <?= $m['active'] ? 'active' : '' ?>">
-                <span class="nav-icon"><?= $m['icon'] ?></span>
-                <?= $m['label'] ?>
-            </a>
-        </div>
-        <?php endforeach; ?>
-
-        <div class="nav-section-title">Sistem</div>
-        <?php foreach ($menuSystem as $m): ?>
-        <div class="nav-item">
-            <a href="<?= $m['href'] ?>" class="nav-link <?= $m['active'] ? 'active' : '' ?>">
-                <span class="nav-icon"><?= $m['icon'] ?></span>
-                <?= $m['label'] ?>
-            </a>
-        </div>
-        <?php endforeach; ?>
-
-    </nav>
-
-    <!-- User Footer -->
-    <div class="sidebar-footer">
-        <div class="user-info">
-            <div class="user-avatar">
-                <?= strtoupper(substr($_SESSION['nama'] ?? 'A', 0, 1)) ?>
-            </div>
-            <div style="flex:1;min-width:0">
-                <div class="user-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
-                    <?= htmlspecialchars($_SESSION['nama'] ?? 'Admin') ?>
+    <div class="offcanvas-body d-flex flex-column h-100 p-0">
+        <!-- Brand (visible on desktop) -->
+        <div class="sidebar-brand d-none d-lg-block">
+            <a href="<?= BASE_URL ?>/admin/index.php" style="text-decoration:none" class="brand-logo">
+                <div class="brand-icon">🦷</div>
+                <div>
+                    <div class="brand-name">SiPaGi</div>
                 </div>
-                <div class="user-role"><?= ucfirst($_SESSION['role'] ?? 'admin') ?></div>
-            </div>
-            <a href="<?= BASE_URL ?>/auth/logout.php" title="Keluar"
-               style="color:#475569;font-size:16px;padding:6px;border-radius:6px;transition:all 0.15s;display:flex;align-items:center"
-               onmouseover="this.style.background='rgba(239,68,68,0.1)';this.style.color='#fca5a5'"
-               onmouseout="this.style.background='';this.style.color='#475569'">
-               🚪
             </a>
+            <div class="brand-subtitle">Sistem Pakar Penyakit Gigi<br>Metode Forward Chaining</div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="sidebar-nav flex-grow-1 px-3 py-3">
+            <div class="nav-section-title">Menu Utama</div>
+            <?php foreach ($menuUtama as $m): ?>
+            <div class="nav-item">
+                <a href="<?= $m['href'] ?>" class="nav-link <?= $m['active'] ? 'active' : '' ?>">
+                    <span class="nav-icon"><?= $m['icon'] ?></span>
+                    <?= $m['label'] ?>
+                </a>
+            </div>
+            <?php endforeach; ?>
+
+            <div class="nav-section-title">Basis Pengetahuan</div>
+            <?php foreach ($menuKnowledge as $m): ?>
+            <div class="nav-item">
+                <a href="<?= $m['href'] ?>" class="nav-link <?= $m['active'] ? 'active' : '' ?>">
+                    <span class="nav-icon"><?= $m['icon'] ?></span>
+                    <?= $m['label'] ?>
+                </a>
+            </div>
+            <?php endforeach; ?>
+
+            <div class="nav-section-title">Sistem</div>
+            <?php foreach ($menuSystem as $m): ?>
+            <div class="nav-item">
+                <a href="<?= $m['href'] ?>" class="nav-link <?= $m['active'] ? 'active' : '' ?>">
+                    <span class="nav-icon"><?= $m['icon'] ?></span>
+                    <?= $m['label'] ?>
+                </a>
+            </div>
+            <?php endforeach; ?>
+        </nav>
+
+        <!-- User Footer -->
+        <div class="sidebar-footer mt-auto border-top border-translucent">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <?= strtoupper(substr($_SESSION['nama'] ?? 'A', 0, 1)) ?>
+                </div>
+                <div style="flex:1;min-width:0">
+                    <div class="user-name" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">
+                        <?= htmlspecialchars($_SESSION['nama'] ?? 'Admin') ?>
+                    </div>
+                    <div class="user-role"><?= ucfirst($_SESSION['role'] ?? 'admin') ?></div>
+                </div>
+                <a href="<?= BASE_URL ?>/auth/logout.php" title="Keluar"
+                   style="color:#475569;font-size:16px;padding:6px;border-radius:6px;transition:all 0.15s;display:flex;align-items:center"
+                   onmouseover="this.style.background='rgba(239,68,68,0.1)';this.style.color='#fca5a5'"
+                   onmouseout="this.style.background='';this.style.color='#475569'">
+                   🚪
+                </a>
+            </div>
         </div>
     </div>
-
 </aside>
-
-<!-- Mobile Backdrop -->
-<div id="sidebarOverlay" onclick="closeSidebar()"
-     style="position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:150;opacity:0;visibility:hidden;transition:all 0.25s;backdrop-filter:blur(4px)">
-</div>
-
-<script>
-function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebarOverlay').style.opacity = '0';
-    document.getElementById('sidebarOverlay').style.visibility = 'hidden';
-}
-// Toggle
-const toggleBtn = document.getElementById('sidebarToggle');
-if (toggleBtn) {
-    toggleBtn.addEventListener('click', function() {
-        const isOpen = document.getElementById('sidebar').classList.toggle('open');
-        document.getElementById('sidebarOverlay').style.opacity = isOpen ? '1' : '0';
-        document.getElementById('sidebarOverlay').style.visibility = isOpen ? 'visible' : 'hidden';
-    });
-}
-</script>

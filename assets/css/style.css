@@ -601,9 +601,9 @@ tbody tr:last-child td { border-bottom: none; }
 .alert-info    { background: rgba(99,102,241,0.08); border-color: rgba(99,102,241,0.25); color: #a5b4fc; }
 
 /* ─────────────────────────────────────────────────────
-   MODALS
+   MODALS (LEGACY - RENAME TO PREVENT CONFLICT WITH BOOTSTRAP)
    ───────────────────────────────────────────────────── */
-.modal-overlay {
+.legacy-modal-overlay {
   position: fixed; inset: 0;
   background: var(--bg-overlay);
   backdrop-filter: blur(8px);
@@ -614,8 +614,8 @@ tbody tr:last-child td { border-bottom: none; }
   opacity: 0; visibility: hidden;
   transition: all var(--t-base) var(--ease);
 }
-.modal-overlay.active { opacity: 1; visibility: visible; }
-.modal {
+.legacy-modal-overlay.active { opacity: 1; visibility: visible; }
+.legacy-modal {
   background: var(--bg-surface);
   border: 1px solid var(--border-md);
   border-radius: var(--r-xl);
@@ -626,14 +626,14 @@ tbody tr:last-child td { border-bottom: none; }
   transition: transform var(--t-base) var(--ease);
   box-shadow: var(--shadow-lg);
 }
-.modal-overlay.active .modal { transform: translateY(0) scale(1); }
-.modal-header {
+.legacy-modal-overlay.active .legacy-modal { transform: translateY(0) scale(1); }
+.legacy-modal-header {
   padding: 18px 22px;
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center; justify-content: space-between;
 }
-.modal-title { font-family: var(--font-heading); font-size: 15px; font-weight: 700; }
-.modal-close {
+.legacy-modal-title { font-family: var(--font-heading); font-size: 15px; font-weight: 700; }
+.legacy-modal-close {
   width: 28px; height: 28px;
   background: var(--bg-card-hv); border: none;
   color: var(--text-300); cursor: pointer;
@@ -641,9 +641,9 @@ tbody tr:last-child td { border-bottom: none; }
   display: flex; align-items: center; justify-content: center;
   transition: all var(--t-fast);
 }
-.modal-close:hover { background: rgba(239,68,68,0.15); color: #fca5a5; }
-.modal-body { padding: 22px; }
-.modal-footer {
+.legacy-modal-close:hover { background: rgba(239,68,68,0.15); color: #fca5a5; }
+.legacy-modal-body { padding: 22px; }
+.legacy-modal-footer {
   padding: 14px 22px;
   border-top: 1px solid var(--border);
   display: flex; gap: 8px; justify-content: flex-end;
@@ -1358,11 +1358,11 @@ tbody tr:last-child td { border-bottom: none; }
   }
 }
 @media (max-width: 480px) {
-  .modal {
+  .legacy-modal {
     max-height: 100vh;
     border-radius: 0;
   }
-  .modal-overlay {
+  .legacy-modal-overlay {
     padding: 0;
   }
 }

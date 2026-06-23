@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Penyakit - SiPaGi Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js" defer></script>
 </head>
@@ -105,10 +106,12 @@ $penyakitList = $conn->query("
     <div class="main-content">
         <div class="topbar">
             <div style="display:flex;align-items:center;gap:12px">
-                <button id="sidebarToggle" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:20px">☰</button>
+                <button class="btn border-0 p-0 text-white-50 d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
+                    <span class="fs-4">☰</span>
+                </button>
                 <div class="topbar-title">🦠 Kelola Data Penyakit</div>
             </div>
-            <button onclick="openModal('modalTambah')" class="btn btn-primary btn-sm">
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambah">
                 + Tambah Penyakit
             </button>
         </div>
@@ -135,58 +138,58 @@ $penyakitList = $conn->query("
             </div>
 
             <!-- Search + Tabel -->
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">📋 Daftar Penyakit Gigi (<?= $penyakitList->num_rows ?> data)</div>
-                    <div class="search-box" style="max-width:250px">
+            <div class="card border-translucent">
+                <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2 py-3">
+                    <h5 class="card-title mb-0">📋 Daftar Penyakit Gigi (<?= $penyakitList->num_rows ?> data)</h5>
+                    <div class="search-box ms-auto" style="max-width:250px">
                         <span class="search-icon">🔍</span>
-                        <input type="text" id="tableSearch" placeholder="Cari penyakit...">
+                        <input type="text" id="tableSearch" class="form-control form-control-sm" placeholder="Cari penyakit...">
                     </div>
                 </div>
-                <div class="table-wrapper">
-                    <table>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
                         <thead>
                             <tr>
-                                <th>Kode</th>
-                                <th>Nama Penyakit</th>
-                                <th>Deskripsi</th>
-                                <th>Jumlah Gejala</th>
-                                <th style="text-align:center">Aksi</th>
+                                <th style="background: var(--bg-surface); color: var(--text-200); border-bottom: 1px solid var(--border);">Kode</th>
+                                <th style="background: var(--bg-surface); color: var(--text-200); border-bottom: 1px solid var(--border);">Nama Penyakit</th>
+                                <th style="background: var(--bg-surface); color: var(--text-200); border-bottom: 1px solid var(--border);">Deskripsi</th>
+                                <th style="background: var(--bg-surface); color: var(--text-200); border-bottom: 1px solid var(--border);">Jumlah Gejala</th>
+                                <th style="background: var(--bg-surface); color: var(--text-200); border-bottom: 1px solid var(--border); text-align:center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody style="border-top: none;">
                             <?php if ($penyakitList->num_rows === 0): ?>
                             <tr>
-                                <td colspan="5" style="text-align:center;padding:40px;color:#64748b">
+                                <td colspan="5" class="text-center py-5 text-muted">
                                     Belum ada data penyakit. Klik <strong>+ Tambah Penyakit</strong> untuk memulai.
                                 </td>
                             </tr>
                             <?php else: ?>
                             <?php while ($p = $penyakitList->fetch_assoc()): ?>
-                            <tr>
-                                <td>
-                                    <span class="badge badge-primary"><?= clean($p['kode']) ?></span>
+                            <tr style="border-bottom: 1px solid var(--border);">
+                                <td style="background: transparent;">
+                                    <span class="badge bg-primary text-white"><?= clean($p['kode']) ?></span>
                                 </td>
-                                <td>
-                                    <div style="font-weight:600"><?= clean($p['nama']) ?></div>
+                                <td style="background: transparent;">
+                                    <div class="fw-semibold text-white"><?= clean($p['nama']) ?></div>
                                 </td>
-                                <td style="max-width:300px">
-                                    <div style="font-size:12px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:280px">
+                                <td style="background: transparent; max-width:300px">
+                                    <div class="text-muted text-truncate" style="font-size:12px; max-width:280px">
                                         <?= clean(substr($p['deskripsi'], 0, 80)) ?>...
                                     </div>
                                 </td>
-                                <td>
-                                    <span class="badge badge-<?= $p['jumlah_aturan'] > 0 ? 'success' : 'warning' ?>">
+                                <td style="background: transparent;">
+                                    <span class="badge bg-<?= $p['jumlah_aturan'] > 0 ? 'success' : 'warning' ?> text-white">
                                         <?= $p['jumlah_aturan'] ?> gejala
                                     </span>
                                 </td>
-                                <td style="text-align:center">
-                                    <div style="display:flex;gap:6px;justify-content:center">
+                                <td style="background: transparent; text-align:center">
+                                    <div class="d-flex gap-2 justify-content-center">
                                         <!-- Tombol Edit -->
                                         <button onclick="openEditModal(<?= htmlspecialchars(json_encode($p)) ?>)" 
-                                                class="btn btn-outline btn-sm">✏️ Edit</button>
+                                                class="btn btn-outline-info btn-sm">✏️ Edit</button>
                                         <!-- Tombol Hapus -->
-                                        <form method="POST" onsubmit="return confirmDelete(this)">
+                                        <form method="POST" onsubmit="return confirmDelete(this)" class="m-0">
                                             <input type="hidden" name="aksi" value="hapus">
                                             <input type="hidden" name="id" value="<?= $p['id'] ?>">
                                             <button type="submit" class="btn btn-danger btn-sm">🗑 Hapus</button>
@@ -208,86 +211,90 @@ $penyakitList = $conn->query("
 <!-- =====================================================
      MODAL TAMBAH PENYAKIT
      ===================================================== -->
-<div class="modal-overlay" id="modalTambah">
-    <div class="modal">
-        <div class="modal-header">
-            <div class="modal-title">➕ Tambah Penyakit Baru</div>
-            <button class="modal-close" onclick="closeModal('modalTambah')">×</button>
+<div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: var(--bg-surface); border: 1px solid var(--border-md);">
+            <div class="modal-header border-bottom border-translucent">
+                <h5 class="modal-title fs-6 fw-bold" id="modalTambahLabel">➕ Tambah Penyakit Baru</h5>
+                <button type="button" class="btn-close text-reset bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="">
+                <input type="hidden" name="aksi" value="tambah">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label text-white-50">Kode Penyakit *</label>
+                            <input type="text" name="kode" class="form-control bg-dark border-secondary text-white" placeholder="P009" required maxlength="10" style="text-transform:uppercase">
+                            <small class="text-muted" style="font-size:11px">Contoh: P009</small>
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label text-white-50">Nama Penyakit *</label>
+                            <input type="text" name="nama" class="form-control bg-dark border-secondary text-white" placeholder="Nama penyakit..." required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-white-50">Deskripsi Penyakit</label>
+                            <textarea name="deskripsi" class="form-control bg-dark border-secondary text-white" rows="3" placeholder="Jelaskan tentang penyakit ini..."></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-white-50">Solusi / Penanganan</label>
+                            <textarea name="solusi" class="form-control bg-dark border-secondary text-white" rows="3" placeholder="Rekomendasi penanganan..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top border-translucent">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">💾 Simpan</button>
+                </div>
+            </form>
         </div>
-        <form method="POST" action="">
-            <input type="hidden" name="aksi" value="tambah">
-            <div class="modal-body">
-                <div style="display:grid;grid-template-columns:1fr 2fr;gap:16px">
-                    <div class="form-group" style="margin-bottom:0">
-                        <label class="form-label">Kode Penyakit *</label>
-                        <input type="text" name="kode" class="form-control" placeholder="P009" required maxlength="10"
-                               style="text-transform:uppercase">
-                        <small style="color:#64748b;font-size:11px">Contoh: P009</small>
-                    </div>
-                    <div class="form-group" style="margin-bottom:0">
-                        <label class="form-label">Nama Penyakit *</label>
-                        <input type="text" name="nama" class="form-control" placeholder="Nama penyakit..." required>
-                    </div>
-                </div>
-                <div class="form-group" style="margin-top:16px">
-                    <label class="form-label">Deskripsi Penyakit</label>
-                    <textarea name="deskripsi" class="form-control" rows="3" placeholder="Jelaskan tentang penyakit ini..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Solusi / Penanganan</label>
-                    <textarea name="solusi" class="form-control" rows="3" placeholder="Rekomendasi penanganan..."></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline" onclick="closeModal('modalTambah')">Batal</button>
-                <button type="submit" class="btn btn-primary">💾 Simpan</button>
-            </div>
-        </form>
     </div>
 </div>
 
 <!-- =====================================================
      MODAL EDIT PENYAKIT
      ===================================================== -->
-<div class="modal-overlay" id="modalEdit">
-    <div class="modal">
-        <div class="modal-header">
-            <div class="modal-title">✏️ Edit Penyakit</div>
-            <button class="modal-close" onclick="closeModal('modalEdit')">×</button>
+<div class="modal fade" id="modalEdit" tabindex="-1" aria-labelledby="modalEditLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background: var(--bg-surface); border: 1px solid var(--border-md);">
+            <div class="modal-header border-bottom border-translucent">
+                <h5 class="modal-title fs-6 fw-bold" id="modalEditLabel">✏️ Edit Penyakit</h5>
+                <button type="button" class="btn-close text-reset bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="">
+                <input type="hidden" name="aksi" value="edit">
+                <input type="hidden" name="id" id="editId">
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label text-white-50">Kode *</label>
+                            <input type="text" name="kode" id="editKode" class="form-control bg-dark border-secondary text-white" required maxlength="10" style="text-transform:uppercase">
+                        </div>
+                        <div class="col-md-8">
+                            <label class="form-label text-white-50">Nama Penyakit *</label>
+                            <input type="text" name="nama" id="editNama" class="form-control bg-dark border-secondary text-white" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-white-50">Deskripsi</label>
+                            <textarea name="deskripsi" id="editDeskripsi" class="form-control bg-dark border-secondary text-white" rows="3"></textarea>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label text-white-50">Solusi</label>
+                            <textarea name="solusi" id="editSolusi" class="form-control bg-dark border-secondary text-white" rows="3"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top border-translucent">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">💾 Update</button>
+                </div>
+            </form>
         </div>
-        <form method="POST" action="">
-            <input type="hidden" name="aksi" value="edit">
-            <input type="hidden" name="id" id="editId">
-            <div class="modal-body">
-                <div style="display:grid;grid-template-columns:1fr 2fr;gap:16px">
-                    <div class="form-group" style="margin-bottom:0">
-                        <label class="form-label">Kode *</label>
-                        <input type="text" name="kode" id="editKode" class="form-control" required maxlength="10" style="text-transform:uppercase">
-                    </div>
-                    <div class="form-group" style="margin-bottom:0">
-                        <label class="form-label">Nama Penyakit *</label>
-                        <input type="text" name="nama" id="editNama" class="form-control" required>
-                    </div>
-                </div>
-                <div class="form-group" style="margin-top:16px">
-                    <label class="form-label">Deskripsi</label>
-                    <textarea name="deskripsi" id="editDeskripsi" class="form-control" rows="3"></textarea>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Solusi</label>
-                    <textarea name="solusi" id="editSolusi" class="form-control" rows="3"></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline" onclick="closeModal('modalEdit')">Batal</button>
-                <button type="submit" class="btn btn-primary">💾 Update</button>
-            </div>
-        </form>
     </div>
 </div>
 
 <script src="../assets/js/main.js"></script>
 <script>
+const editModal = new bootstrap.Modal(document.getElementById('modalEdit'));
 // Fungsi untuk mengisi modal edit dengan data penyakit
 function openEditModal(data) {
     document.getElementById('editId').value = data.id;
@@ -295,8 +302,9 @@ function openEditModal(data) {
     document.getElementById('editNama').value = data.nama;
     document.getElementById('editDeskripsi').value = data.deskripsi || '';
     document.getElementById('editSolusi').value = data.solusi || '';
-    openModal('modalEdit');
+    editModal.show();
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Aturan (Rules) - SiPaGi Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/style.css">
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js" defer></script>
 </head>
@@ -115,10 +116,12 @@ while ($row = $aturanResult->fetch_assoc()) {
     <div class="main-content">
         <div class="topbar">
             <div style="display:flex;align-items:center;gap:12px">
-                <button id="sidebarToggle" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:20px">☰</button>
+                <button class="btn border-0 p-0 text-white-50 d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar">
+                    <span class="fs-4">☰</span>
+                </button>
                 <div class="topbar-title">⚙️ Kelola Aturan (Rules) - Basis Pengetahuan</div>
             </div>
-            <button onclick="openModal('modalTambah')" class="btn btn-primary btn-sm">
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalTambah">
                 + Tambah Aturan
             </button>
         </div>
@@ -206,54 +209,56 @@ while ($row = $aturanResult->fetch_assoc()) {
 </div>
 
 <!-- Modal Tambah Aturan -->
-<div class="modal-overlay" id="modalTambah">
-    <div class="modal" style="max-width:640px">
-        <div class="modal-header">
-            <div class="modal-title">⚙️ Tambah Aturan Baru</div>
-            <button class="modal-close" onclick="closeModal('modalTambah')">×</button>
-        </div>
-        <form method="POST">
-            <input type="hidden" name="aksi" value="tambah">
-            <div class="modal-body">
-                <!-- Pilih Penyakit (THEN) -->
-                <div class="form-group">
-                    <label class="form-label">🦠 Penyakit (THEN) *</label>
-                    <select name="penyakit_id" class="form-control" required>
-                        <option value="">-- Pilih Penyakit --</option>
-                        <?php 
-                        $penyakitList->data_seek(0);
-                        while ($p = $penyakitList->fetch_assoc()): ?>
-                        <option value="<?= $p['id'] ?>">[<?= $p['kode'] ?>] <?= clean($p['nama']) ?></option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
+<div class="modal fade" id="modalTambah" tabindex="-1" aria-labelledby="modalTambahLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content" style="background: var(--bg-surface); border: 1px solid var(--border-md);">
+            <div class="modal-header border-bottom border-translucent">
+                <h5 class="modal-title fs-6 fw-bold" id="modalTambahLabel">⚙️ Tambah Aturan Baru</h5>
+                <button type="button" class="btn-close text-reset bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST">
+                <input type="hidden" name="aksi" value="tambah">
+                <div class="modal-body">
+                    <!-- Pilih Penyakit (THEN) -->
+                    <div class="mb-3">
+                        <label class="form-label text-white-50">🦠 Penyakit (THEN) *</label>
+                        <select name="penyakit_id" class="form-select bg-dark border-secondary text-white" required>
+                            <option value="">-- Pilih Penyakit --</option>
+                            <?php 
+                            $penyakitList->data_seek(0);
+                            while ($p = $penyakitList->fetch_assoc()): ?>
+                            <option value="<?= $p['id'] ?>">[<?= $p['kode'] ?>] <?= clean($p['nama']) ?></option>
+                            <?php endwhile; ?>
+                        </select>
+                    </div>
 
-                <!-- Pilih Gejala (IF) - Multiple Checkbox -->
-                <div class="form-group">
-                    <label class="form-label">📝 Gejala (IF) * — Pilih satu atau lebih</label>
-                    <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;max-height:320px;overflow-y:auto;padding:12px">
-                        <?php 
-                        $gejalaList->data_seek(0);
-                        while ($g = $gejalaList->fetch_assoc()): ?>
-                        <label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:background 0.15s">
-                            <input type="checkbox" name="gejala_id[]" value="<?= $g['id'] ?>" 
-                                   style="width:16px;height:16px;accent-color:#0ea5e9;cursor:pointer">
-                            <span class="badge badge-success" style="font-size:10px;flex-shrink:0"><?= $g['kode'] ?></span>
-                            <span style="font-size:13px;color:#cbd5e1"><?= clean($g['nama']) ?></span>
-                        </label>
-                        <?php endwhile; ?>
-                    </div>
-                    <div style="margin-top:8px;display:flex;gap:10px">
-                        <button type="button" onclick="checkAll(true)" style="background:none;border:none;color:#38bdf8;cursor:pointer;font-size:12px">✅ Pilih Semua</button>
-                        <button type="button" onclick="checkAll(false)" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:12px">❌ Batal Semua</button>
+                    <!-- Pilih Gejala (IF) - Multiple Checkbox -->
+                    <div class="mb-3">
+                        <label class="form-label text-white-50">📝 Gejala (IF) * — Pilih satu atau lebih</label>
+                        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:10px;max-height:320px;overflow-y:auto;padding:12px">
+                            <?php 
+                            $gejalaList->data_seek(0);
+                            while ($g = $gejalaList->fetch_assoc()): ?>
+                            <label style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;cursor:pointer;transition:background 0.15s">
+                                <input type="checkbox" name="gejala_id[]" value="<?= $g['id'] ?>" 
+                                       style="width:16px;height:16px;accent-color:#0ea5e9;cursor:pointer">
+                                <span class="badge bg-success text-white" style="font-size:10px;flex-shrink:0"><?= $g['kode'] ?></span>
+                                <span style="font-size:13px;color:#cbd5e1"><?= clean($g['nama']) ?></span>
+                            </label>
+                            <?php endwhile; ?>
+                        </div>
+                        <div style="margin-top:8px;display:flex;gap:10px">
+                            <button type="button" onclick="checkAll(true)" style="background:none;border:none;color:#38bdf8;cursor:pointer;font-size:12px">✅ Pilih Semua</button>
+                            <button type="button" onclick="checkAll(false)" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:12px">❌ Batal Semua</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline" onclick="closeModal('modalTambah')">Batal</button>
-                <button type="submit" class="btn btn-primary">💾 Simpan Aturan</button>
-            </div>
-        </form>
+                <div class="modal-footer border-top border-translucent">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">💾 Simpan Aturan</button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -263,5 +268,6 @@ function checkAll(state) {
     document.querySelectorAll('#modalTambah input[type=checkbox]').forEach(cb => cb.checked = state);
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
