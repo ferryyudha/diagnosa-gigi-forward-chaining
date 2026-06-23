@@ -10,30 +10,14 @@
 </head>
 <body>
 <?php
-/**
- * HALAMAN KELOLA ATURAN (BASIS PENGETAHUAN)
- * ============================================================
- * Aturan adalah JANTUNG dari sistem forward chaining!
- * Setiap aturan berbentuk: IF [Gejala] THEN [Penyakit]
- * 
- * Contoh:
- * IF (G001) Nyeri spontan DAN (G015) Nyeri berdenyut THEN Pulpitis
- * 
- * Di halaman ini admin dapat:
- * - Menambah relasi gejala-penyakit (aturan baru)
- * - Menghapus relasi yang tidak diperlukan
- * - Melihat semua aturan yang ada
- * ============================================================
- */
+// Halaman kelola aturan IF-THEN (basis pengetahuan forward chaining)
 require_once '../config/database.php';
 require_once '../config/session.php';
 requireAdmin();
 
 $flash = getFlash();
 
-// =====================================================
-// PROSES TAMBAH / HAPUS ATURAN
-// =====================================================
+// Proses tambah atau hapus aturan
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $aksi = $_POST['aksi'] ?? '';
 

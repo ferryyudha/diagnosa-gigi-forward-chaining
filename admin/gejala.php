@@ -10,21 +10,14 @@
 </head>
 <body>
 <?php
-/**
- * HALAMAN KELOLA GEJALA (CRUD)
- * Gejala adalah FAKTA dalam sistem forward chaining.
- * Pasien akan memilih gejala yang dirasakan, kemudian sistem
- * akan mencocokkan dengan basis aturan untuk menghasilkan diagnosa.
- */
+// Halaman kelola data gejala (tambah, edit, hapus)
 require_once '../config/database.php';
 require_once '../config/session.php';
 requireAdmin();
 
 $flash = getFlash();
 
-// =====================================================
-// PROSES CRUD GEJALA
-// =====================================================
+// Proses form tambah / edit / hapus gejala
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $aksi = $_POST['aksi'] ?? '';
     $kode = strtoupper(clean($_POST['kode'] ?? ''));

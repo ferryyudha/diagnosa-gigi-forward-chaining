@@ -10,11 +10,7 @@
 </head>
 <body>
 <?php
-/**
- * HALAMAN KELOLA PENGGUNA
- * Admin dapat menambah, mengedit, dan menghapus akun pengguna sistem.
- * Password disimpan dengan bcrypt hashing untuk keamanan.
- */
+// Halaman kelola akun pengguna admin
 require_once '../config/database.php';
 require_once '../config/session.php';
 requireAdmin();

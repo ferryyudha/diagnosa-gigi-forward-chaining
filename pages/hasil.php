@@ -10,25 +10,11 @@
 </head>
 <body>
 <?php
-/**
- * HALAMAN HASIL DIAGNOSA
- * ============================================================
- * Halaman ini menerima POST data dari konsultasi.php,
- * kemudian menjalankan engine Forward Chaining untuk mendapatkan
- * hasil diagnosa, dan menampilkannya kepada pasien.
- * 
- * Alur:
- * 1. Validasi data POST (nama & gejala)
- * 2. Jalankan ForwardChaining::diagnosa()
- * 3. Simpan hasil ke database
- * 4. Tampilkan hasil dengan animasi
- * ============================================================
- */
+// Halaman hasil diagnosa — jalankan FC, simpan ke DB, tampilkan ke pasien
 require_once '../config/database.php';
 require_once '../config/session.php';
-require_once '../forward_chaining.php'; // Load engine FC
+require_once '../forward_chaining.php';
 
-// Deteksi apakah user sedang login sebagai admin
 $isAdmin = isset($_SESSION['user_id']) && $_SESSION['role'] === 'admin';
 
 // Validasi: harus dari POST konsultasi
@@ -44,18 +30,12 @@ if (empty($namaPasien) || empty($gejalaDipilih)) {
     redirect(BASE_URL . '/pages/konsultasi.php');
 }
 
-// =====================================================
-// JALANKAN ENGINE FORWARD CHAINING
-// =====================================================
+// Jalankan engine forward chaining
 $fc = new ForwardChaining($conn, $gejalaDipilih);
-$hasilList = $fc->diagnosa(); // Ini menjalankan proses inferensi
-
-// Ambil diagnosa utama (persentase tertinggi)
+$hasilList = $fc->diagnosa();
 $hasilUtama = !empty($hasilList) ? $hasilList[0] : null;
 
-// =====================================================
-// SIMPAN HASIL KE DATABASE (RIWAYAT KONSULTASI)
-// =====================================================
+// Simpan ke tabel konsultasi
 $diagnosaNama = $hasilUtama ? $hasilUtama['penyakit']['nama'] : 'Tidak Terdeteksi';
 $persentase   = $hasilUtama ? $hasilUtama['persentase'] : 0;
 $userId       = $_SESSION['user_id'] ?? null;
@@ -73,9 +53,7 @@ foreach ($gejalaDipilih as $gejalaId) {
     $stmtG->execute();
 }
 
-// =====================================================
-// Ambil data gejala yang dipilih (untuk ditampilkan)
-// =====================================================
+// Ambil nama gejala yang dipilih untuk ditampilkan
 $placeholders = implode(',', array_fill(0, count($gejalaDipilih), '?'));
 $stmtGejala = $conn->prepare("SELECT * FROM gejala WHERE id IN ($placeholders) ORDER BY kode");
 $stmtGejala->bind_param(str_repeat('i', count($gejalaDipilih)), ...$gejalaDipilih);
@@ -148,9 +126,7 @@ function getPersentaseBadge($pct) {
     </div>
 
     <?php if (empty($hasilList)): ?>
-    <!-- =====================================================
-         TIDAK ADA DIAGNOSA
-         ===================================================== -->
+    <!-- Tidak ada penyakit yang cocok -->
     <div style="text-align:center;padding:60px 20px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:20px;margin-bottom:24px">
         <div style="font-size:64px;margin-bottom:16px">🤔</div>
         <h2 style="font-family:'Poppins',sans-serif;font-size:22px;margin-bottom:12px">Penyakit Tidak Terdeteksi</h2>
@@ -163,9 +139,7 @@ function getPersentaseBadge($pct) {
     </div>
 
     <?php else: ?>
-    <!-- =====================================================
-         HASIL DIAGNOSA UTAMA
-         ===================================================== -->
+    <!-- Diagnosa utama - persentase tertinggi -->
     <div class="hasil-hero">
         <span class="hasil-icon">🦷</span>
         <div style="font-size:14px;color:#64748b;margin-bottom:8px">Diagnosa Utama</div>
@@ -230,9 +204,7 @@ function getPersentaseBadge($pct) {
         </div>
     </div>
 
-    <!-- =====================================================
-         SEMUA KEMUNGKINAN DIAGNOSA
-         ===================================================== -->
+    <!-- Tabel semua kemungkinan penyakit -->
     <div class="card">
         <div class="card-header">
             <div class="card-title">📊 Analisis Semua Kemungkinan Penyakit</div>
