@@ -78,7 +78,7 @@ $flash = getFlash();
         <!-- TOPBAR -->
         <div class="topbar">
             <div style="display:flex;align-items:center;gap:12px">
-                <button id="sidebarToggle" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:20px;display:none" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+                <button id="sidebarToggle" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:20px" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
                 <div class="topbar-title">📊 Dashboard</div>
             </div>
             <div class="topbar-actions">
