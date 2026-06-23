@@ -22,3 +22,10 @@ desktop.ini
 .idea/
 *.sublime-project
 *.sublime-workspace
+
+# Dokumen dan skrip pendukung (tidak di-upload ke web repo)
+*.docx
+*.pdf
+generate_word.py
+~$*
+
