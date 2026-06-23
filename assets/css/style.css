@@ -224,7 +224,7 @@ input, button, select, textarea { font-family: inherit; }
 .nav-section-title {
   font-size: 9.5px;
   font-weight: 700;
-  color: var(--text-500);
+  color: var(--text-400) !important;
   text-transform: uppercase;
   letter-spacing: 1.8px;
   padding: 14px 16px 6px;
@@ -238,7 +238,7 @@ input, button, select, textarea { font-family: inherit; }
   gap: 9px;
   padding: 9px 10px;
   border-radius: var(--r-sm);
-  color: var(--text-300);
+  color: var(--text-200) !important;
   font-size: 13.5px;
   font-weight: 500;
   transition: all var(--t-fast) var(--ease);
@@ -254,10 +254,10 @@ input, button, select, textarea { font-family: inherit; }
   transition: opacity var(--t-fast);
   border-radius: inherit;
 }
-.nav-link:hover { color: var(--text-100); background: var(--bg-card-hv); }
+.nav-link:hover { color: var(--text-100) !important; background: var(--bg-card-hv); }
 .nav-link.active {
-  background: rgba(14,165,233,0.12);
-  color: var(--brand-400);
+  background: rgba(14,165,233,0.12) !important;
+  color: var(--brand-400) !important;
   font-weight: 600;
 }
 .nav-link.active::after {
