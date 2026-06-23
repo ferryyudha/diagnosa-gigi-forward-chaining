@@ -1,128 +1,107 @@
 <?php
-/**
- * ENGINE FORWARD CHAINING
- * ============================================================
- * Ini adalah inti dari sistem pakar. Metode Forward Chaining
- * bekerja dengan cara:
- * 
- * 1. Menerima FAKTA (gejala yang dipilih pasien)
- * 2. Mencocokkan fakta dengan ATURAN di basis pengetahuan
- * 3. Jika semua gejala dalam suatu aturan terpenuhi,
- *    maka penyakit tersebut terdiagnosa
- * 4. Menghitung persentase kesesuaian gejala
- * 
- * Alur Forward Chaining:
- * FAKTA (Gejala Pasien) --> MESIN INFERENSI --> KESIMPULAN (Diagnosa)
- * ============================================================
- */
+// Engine forward chaining untuk sistem pakar diagnosa penyakit gigi
 
 require_once __DIR__ . '/config/database.php';
 
 class ForwardChaining {
-    private $conn;           // Koneksi database
-    private $faktaAwal;      // Gejala yang dipilih pasien (Working Memory)
-    private $hasilDiagnosa;  // Hasil diagnosa akhir
-    
-    /**
-     * Constructor - inisialisasi engine dengan koneksi DB dan fakta awal
-     * @param mysqli $conn - Koneksi database
-     * @param array $gejalaDipilih - Array ID gejala yang dipilih pasien
-     */
+    private $conn;
+    private $faktaAwal;     // gejala yang dipilih pasien
+    private $hasilDiagnosa;
+
     public function __construct($conn, $gejalaDipilih) {
         $this->conn = $conn;
-        $this->faktaAwal = $gejalaDipilih; // Fakta awal = gejala yang dipilih
+        $this->faktaAwal = $gejalaDipilih;
         $this->hasilDiagnosa = [];
     }
-    
-    /**
-     * FUNGSI UTAMA: Jalankan proses Forward Chaining
-     * 
-     * Proses:
-     * 1. Ambil semua penyakit dari database
-     * 2. Untuk setiap penyakit, ambil gejala yang dibutuhkan (aturan)
-     * 3. Cocokkan dengan fakta awal (gejala pasien)
-     * 4. Hitung persentase kecocokan
-     * 5. Simpan sebagai hasil diagnosa
-     */
+
+    // Jalankan forward chaining berdasarkan gejala yang dipilih pasien
     public function diagnosa() {
-        // LANGKAH 1: Ambil semua penyakit dari database
-        $queryPenyakit = "SELECT * FROM penyakit ORDER BY kode";
-        $resultPenyakit = $this->conn->query($queryPenyakit);
-        
-        while ($penyakit = $resultPenyakit->fetch_assoc()) {
-            // LANGKAH 2: Ambil semua gejala yang diperlukan untuk penyakit ini
-            $queryAturan = "SELECT g.id, g.kode, g.nama 
-                           FROM aturan a 
-                           JOIN gejala g ON a.gejala_id = g.id 
-                           WHERE a.penyakit_id = ?
-                           ORDER BY g.kode";
-            $stmt = $this->conn->prepare($queryAturan);
-            $stmt->bind_param('i', $penyakit['id']);
-            $stmt->execute();
-            $resultAturan = $stmt->get_result();
-            
-            $gejalaPenyakit = []; // Gejala yang dibutuhkan penyakit ini
-            while ($gejala = $resultAturan->fetch_assoc()) {
-                $gejalaPenyakit[] = $gejala;
+        // Ambil semua aturan sekaligus pakai 1 query JOIN
+        // (hindari N+1: sebelumnya ada 1 query per penyakit di dalam loop)
+        $sql = "SELECT a.penyakit_id, p.kode, p.nama, p.deskripsi, p.solusi,
+                       a.gejala_id, g.nama AS nama_gejala, g.kode AS kode_gejala
+                FROM aturan a
+                JOIN penyakit p ON a.penyakit_id = p.id
+                JOIN gejala g ON a.gejala_id = g.id
+                ORDER BY p.kode, g.kode";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        // Group hasil query ke dalam array berdasarkan penyakit_id
+        $basisPengetahuan = [];
+        while ($row = $result->fetch_assoc()) {
+            $pid = $row['penyakit_id'];
+            if (!isset($basisPengetahuan[$pid])) {
+                $basisPengetahuan[$pid] = [
+                    'id'       => $pid,
+                    'kode'     => $row['kode'],
+                    'nama'     => $row['nama'],
+                    'deskripsi'=> $row['deskripsi'],
+                    'solusi'   => $row['solusi'],
+                    'gejala'   => [],
+                ];
             }
-            
-            if (empty($gejalaPenyakit)) continue; // Skip jika tidak ada aturan
-            
-            // LANGKAH 3: PROSES INFERENSI FORWARD CHAINING
-            // Cocokkan fakta (gejala pasien) dengan gejala yang dibutuhkan
-            $gejalaCocok = [];    // Gejala yang cocok
-            $gejalaKurang = [];   // Gejala yang tidak cocok
-            
-            foreach ($gejalaPenyakit as $g) {
+            $basisPengetahuan[$pid]['gejala'][] = [
+                'id'   => $row['gejala_id'],
+                'kode' => $row['kode_gejala'],
+                'nama' => $row['nama_gejala'],
+            ];
+        }
+
+        // Proses inferensi: cocokkan fakta pasien dengan setiap aturan penyakit
+        foreach ($basisPengetahuan as $penyakit) {
+            $gejalaCocok  = [];
+            $gejalaKurang = [];
+
+            foreach ($penyakit['gejala'] as $g) {
                 if (in_array($g['id'], $this->faktaAwal)) {
-                    // Fakta terpenuhi: pasien memiliki gejala ini
                     $gejalaCocok[] = $g;
                 } else {
-                    // Fakta tidak terpenuhi: pasien tidak memiliki gejala ini
                     $gejalaKurang[] = $g;
                 }
             }
-            
-            // LANGKAH 4: Hitung persentase kecocokan
-            $totalGejala = count($gejalaPenyakit);
+
+            $totalGejala = count($penyakit['gejala']);
             $jumlahCocok = count($gejalaCocok);
+
+            if ($jumlahCocok === 0) continue;
+
             $persentase = ($jumlahCocok / $totalGejala) * 100;
-            
-            // LANGKAH 5: Simpan hasil jika ada minimal 1 gejala yang cocok
-            // Minimal 50% gejala harus cocok agar dianggap terdiagnosa
-            if ($jumlahCocok > 0) {
-                $this->hasilDiagnosa[] = [
-                    'penyakit'        => $penyakit,
-                    'gejala_cocok'    => $gejalaCocok,
-                    'gejala_kurang'   => $gejalaKurang,
-                    'total_gejala'    => $totalGejala,
-                    'jumlah_cocok'    => $jumlahCocok,
-                    'persentase'      => round($persentase, 2),
-                ];
-            }
+
+            // Simpan data penyakit tanpa key 'gejala' agar formatnya sama seperti sebelumnya
+            $dataPenyakit = [
+                'id'       => $penyakit['id'],
+                'kode'     => $penyakit['kode'],
+                'nama'     => $penyakit['nama'],
+                'deskripsi'=> $penyakit['deskripsi'],
+                'solusi'   => $penyakit['solusi'],
+            ];
+
+            $this->hasilDiagnosa[] = [
+                'penyakit'      => $dataPenyakit,
+                'gejala_cocok'  => $gejalaCocok,
+                'gejala_kurang' => $gejalaKurang,
+                'total_gejala'  => $totalGejala,
+                'jumlah_cocok'  => $jumlahCocok,
+                'persentase'    => round($persentase, 2),
+            ];
         }
-        
-        // Urutkan hasil berdasarkan persentase tertinggi ke terendah
+
+        // Urutkan dari persentase tertinggi ke terendah
         usort($this->hasilDiagnosa, function($a, $b) {
             return $b['persentase'] <=> $a['persentase'];
         });
-        
+
         return $this->hasilDiagnosa;
     }
-    
-    /**
-     * Ambil hasil diagnosa utama (persentase tertinggi)
-     */
+
+    // Ambil hasil dengan persentase tertinggi
     public function getHasilUtama() {
-        if (!empty($this->hasilDiagnosa)) {
-            return $this->hasilDiagnosa[0];
-        }
-        return null;
+        return $this->hasilDiagnosa[0] ?? null;
     }
-    
-    /**
-     * Ambil semua hasil diagnosa
-     */
+
+    // Ambil semua hasil diagnosa
     public function getAllHasil() {
         return $this->hasilDiagnosa;
     }
