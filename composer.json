@@ -1,0 +1,10 @@
+{
+  "name": "ferryyudha/diagnosa-gigi-forward-chaining",
+  "description": "Sistem Pakar Diagnosa Penyakit Gigi Metode Forward Chaining",
+  "type": "project",
+  "require": {
+    "php": ">=8.1",
+    "ext-mysqli": "*",
+    "ext-pdo_mysql": "*"
+  }
+}
