@@ -28,4 +28,5 @@ desktop.ini
 *.pdf
 generate_word.py
 ~$*
+*.zip
 
